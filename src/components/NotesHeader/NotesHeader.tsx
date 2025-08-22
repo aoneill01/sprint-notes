@@ -1,22 +1,6 @@
-import {
-  Header,
-  HeaderContainer,
-  HeaderName,
-  HeaderNavigation,
-  HeaderMenuButton,
-  HeaderMenuItem,
-  HeaderGlobalBar,
-  HeaderGlobalAction,
-  SkipToContent,
-  SideNav,
-  SideNavItems,
-  HeaderSideNavItems,
-} from "@carbon/react";
-import { Switcher, Notification, UserAvatar } from "@carbon/icons-react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Header, HeaderName } from "@carbon/react";
 
 const NotesHeader = () => {
-  const navigate = useNavigate();
   return (
     <Header aria-label="Sprint Notes">
       <HeaderName href="/" prefix="">

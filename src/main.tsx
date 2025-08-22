@@ -9,11 +9,8 @@ import {
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
-import "./styles.css";
 import "./globals.scss";
 import reportWebVitals from "./reportWebVitals.ts";
-import NotesHeader from "@/components/NotesHeader/NotesHeader.tsx";
-import { Content, Theme } from "@carbon/react";
 
 const hashHistory = createHashHistory();
 

@@ -12,7 +12,7 @@ import { routeTree } from "./routeTree.gen";
 import "./styles.css";
 import "./globals.scss";
 import reportWebVitals from "./reportWebVitals.ts";
-import TutorialHeader from "@/components/TutorialHeader/TutorialHeader.tsx";
+import NotesHeader from "@/components/NotesHeader/NotesHeader.tsx";
 import { Content, Theme } from "@carbon/react";
 
 const hashHistory = createHashHistory();

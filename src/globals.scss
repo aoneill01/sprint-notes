@@ -7,7 +7,7 @@
 
 /* system preference theme by default */
 :root {
-  @include themes.theme($g10);
+  @include themes.theme($white);
 }
 
 @media (prefers-color-scheme: dark) {

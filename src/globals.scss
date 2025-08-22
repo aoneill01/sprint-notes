@@ -1,0 +1,17 @@
+@use "@carbon/react" with (
+  $font-path: "@ibm/plex"
+);
+@use "@carbon/themes/scss/themes" as *;
+@use "@carbon/themes";
+@use "@carbon/react/scss/theme" as *;
+
+/* system preference theme by default */
+:root {
+  @include themes.theme($g10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include themes.theme($g100);
+  }
+}

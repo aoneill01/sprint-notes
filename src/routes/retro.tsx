@@ -57,6 +57,18 @@ function Retro() {
     deleteNote: deleteHighlight,
     updateNote: updateHighlight,
   } = useNotes<RetroNote>("highlights", noteSelector);
+  const {
+    notes: lowlights,
+    addNote: addLowlight,
+    deleteNote: deleteLowlight,
+    updateNote: updateLowlight,
+  } = useNotes<RetroNote>("lowlights", noteSelector);
+  const {
+    notes: learnings,
+    addNote: addLearning,
+    deleteNote: deleteLearning,
+    updateNote: updateLearning,
+  } = useNotes<RetroNote>("learnings", noteSelector);
   const [selectedItem, setSelectedItem] = useState(selectItems[0]);
   const [newNote, setNewNote] = useState("");
 
@@ -77,7 +89,20 @@ function Retro() {
           description: newNote.trim(),
         });
         break;
+      case "lowlights":
+        addLowlight({
+          date: today,
+          description: newNote.trim(),
+        });
+        break;
+      case "learnings":
+        addLearning({
+          date: today,
+          description: newNote.trim(),
+        });
+        break;
     }
+    setNewNote("");
   };
 
   return (
@@ -140,6 +165,18 @@ function Retro() {
           notes={highlights}
           onDeleteNote={deleteHighlight}
           onUpdateNote={updateHighlight}
+        />
+        <h2>Lowlights</h2>
+        <NotesList
+          notes={lowlights}
+          onDeleteNote={deleteLowlight}
+          onUpdateNote={updateLowlight}
+        />
+        <h2>Learnings</h2>
+        <NotesList
+          notes={learnings}
+          onDeleteNote={deleteLearning}
+          onUpdateNote={updateLearning}
         />
       </Column>
     </Grid>

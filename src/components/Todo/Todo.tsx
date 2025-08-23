@@ -20,13 +20,15 @@ export type Task = {
 
 type TodoProps = {
   tasks: Task[];
-  onAddTask: (description: string) => void;
+  newDate: string;
+  onAddTask: (task: Omit<Task, "id">) => void;
   onDeleteTask: (id: string) => void;
   onUpdateTask: (task: Task) => void;
 };
 
 const Todo: FC<TodoProps> = ({
   tasks,
+  newDate,
   onAddTask,
   onDeleteTask,
   onUpdateTask,
@@ -39,7 +41,11 @@ const Todo: FC<TodoProps> = ({
   const addTask = () => {
     if (!isValidNewTask()) return;
 
-    onAddTask(newTask.trim());
+    onAddTask({
+      date: newDate,
+      description: newTask.trim(),
+      completed: false,
+    });
     setNewTask("");
   };
 

@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Column, Grid } from "@carbon/react";
-import Todo from "@/components/Todo/Todo";
+import Todo, { type Task } from "@/components/Todo/Todo";
 import { useToday } from "@/hooks/useToday";
-import { useTasks } from "@/hooks/useTasks";
+import { useCallback } from "react";
+import { isBetween } from "@/helpers/dateHelpers";
+import { useNotes } from "@/hooks/useNotes";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -10,24 +12,42 @@ export const Route = createFileRoute("/")({
 
 function App() {
   const { today, yesterday } = useToday();
+
+  const todaySelector = useCallback(
+    (note: Task) => note.date === today,
+    [today]
+  );
+
   const {
-    tasks: todaysTasks,
-    handleUpdateTask: handleUpdateTaskToday,
-    handleDeleteTask: handleDeleteTaskToday,
-    handleAddTask: handleAddTaskToday,
-  } = useTasks("task", today);
+    notes: todaysTasks,
+    addNote: addTodaysNote,
+    deleteNote: deleteTodaysNote,
+    updateNote: updateTodaysNote,
+  } = useNotes<Task>("task", todaySelector);
+
+  const yesterdaySelector = useCallback(
+    (note: Task) => note.date === yesterday,
+    [yesterday]
+  );
+
   const {
-    tasks: yesterdaysTasks,
-    handleUpdateTask: handleUpdateTaskYesterday,
-    handleDeleteTask: handleDeleteTaskYesterday,
-    handleAddTask: handleAddTaskYesterday,
-  } = useTasks("task", yesterday);
+    notes: yesterdaysTasks,
+    addNote: addYesterdaysTask,
+    deleteNote: deleteYesterdaysTask,
+    updateNote: updateYesterdaysTask,
+  } = useNotes<Task>("task", yesterdaySelector);
+
+  const infoSelector = useCallback(
+    (note: Task) => isBetween(note.date, yesterday, today),
+    [today, yesterday]
+  );
+
   const {
-    tasks: infoTasks,
-    handleUpdateTask: handleUpdateTaskInfo,
-    handleDeleteTask: handleDeleteTaskInfo,
-    handleAddTask: handleAddTaskInfo,
-  } = useTasks("info", today);
+    notes: infos,
+    addNote: addInfo,
+    deleteNote: deleteInfo,
+    updateNote: updateInfo,
+  } = useNotes<Task>("info", infoSelector);
 
   return (
     <Grid fullWidth>
@@ -35,23 +55,26 @@ function App() {
         <h2>Today I will...</h2>
         <Todo
           tasks={todaysTasks}
-          onAddTask={handleAddTaskToday}
-          onDeleteTask={handleDeleteTaskToday}
-          onUpdateTask={handleUpdateTaskToday}
+          newDate={today}
+          onAddTask={addTodaysNote}
+          onDeleteTask={deleteTodaysNote}
+          onUpdateTask={updateTodaysNote}
         />
         <h2>Yesterday I...</h2>
         <Todo
           tasks={yesterdaysTasks}
-          onAddTask={handleAddTaskYesterday}
-          onDeleteTask={handleDeleteTaskYesterday}
-          onUpdateTask={handleUpdateTaskYesterday}
+          newDate={yesterday}
+          onAddTask={addYesterdaysTask}
+          onDeleteTask={deleteYesterdaysTask}
+          onUpdateTask={updateYesterdaysTask}
         />
         <h2>Blockers, Information-Radiators, & Meet-Afters</h2>
         <Todo
-          tasks={infoTasks}
-          onAddTask={handleAddTaskInfo}
-          onDeleteTask={handleDeleteTaskInfo}
-          onUpdateTask={handleUpdateTaskInfo}
+          tasks={infos}
+          newDate={today}
+          onAddTask={addInfo}
+          onDeleteTask={deleteInfo}
+          onUpdateTask={updateInfo}
         />
       </Column>
     </Grid>

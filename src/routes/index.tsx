@@ -1,4 +1,3 @@
-import "../App.css";
 import { createFileRoute } from "@tanstack/react-router";
 import { Column, Grid } from "@carbon/react";
 import Todo from "@/components/Todo/Todo";

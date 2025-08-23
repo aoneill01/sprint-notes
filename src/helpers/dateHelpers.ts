@@ -18,6 +18,11 @@ export const getPreviousDate = (date: string) => {
   );
 };
 
+export const isBetween = (date: string, start: string, end: string) => {
+  // Assume these are in yyyy-mm-dd format, so we can string compare
+  return date >= start && date <= end;
+};
+
 const convertToWeekday = (date: string) => {
   const d = stringToDate(date);
   if (d.getDay() === 0 || d.getDay() === 6) {

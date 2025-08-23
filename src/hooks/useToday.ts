@@ -6,6 +6,8 @@ export const useToday = () => {
   return useMemo(() => {
     const today = getTodaysDate();
     const yesterday = getPreviousDate(today);
-    return { today, yesterday };
+    let twoWeeksAgo = today;
+    for (let i = 0; i < 10; i++) twoWeeksAgo = getPreviousDate(twoWeeksAgo);
+    return { today, yesterday, twoWeeksAgo };
   }, []);
 };

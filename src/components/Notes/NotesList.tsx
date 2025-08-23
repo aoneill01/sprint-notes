@@ -1,23 +1,27 @@
 import { transformDescription } from "@/helpers/markdownHelpers";
-import type { Note } from "@/hooks/useNotes";
 import { Edit, TrashCan } from "@carbon/icons-react";
 import { Button, Modal, TextInput } from "@carbon/react";
-import { useState, type FC } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import Markdown from "react-markdown";
 
-type NotesListProps = {
-  notes: Note[];
-  onDeleteNote: (id: string) => void;
-  onUpdateNote: (note: Note) => void;
+type DescriptionNote = {
+  id: string;
+  description: string;
 };
 
-const NotesList: FC<NotesListProps> = ({
+type NotesListProps<N extends DescriptionNote> = {
+  notes: N[];
+  onDeleteNote: (id: string) => void;
+  onUpdateNote: (note: N) => void;
+};
+
+function NotesList<N extends DescriptionNote>({
   notes,
   onDeleteNote,
   onUpdateNote,
-}) => {
-  const [editNote, setEditNote] = useState<Note | null>(null);
+}: NotesListProps<N>) {
+  const [editNote, setEditNote] = useState<N | null>(null);
 
   return (
     <>
@@ -88,6 +92,6 @@ const NotesList: FC<NotesListProps> = ({
       )}
     </>
   );
-};
+}
 
 export default NotesList;

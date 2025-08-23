@@ -1,48 +1,44 @@
-import { isBetween } from "@/helpers/dateHelpers";
 import { useEffect, useState } from "react";
 
-export type Note = {
+type Note = {
   id: string;
-  description: string;
-  date: string;
 };
 
-export const useNotes = (type: string, startDate: string, endDate: string) => {
+export function useNotes<N extends Note>(
+  key: string,
+  selector: (note: N) => boolean
+) {
   const loadFromStorage = () => {
-    const storedValue = localStorage.getItem(type);
+    const storedValue = localStorage.getItem(key);
     if (storedValue) {
-      return JSON.parse(storedValue) as Note[];
+      return JSON.parse(storedValue) as N[];
     }
     return [];
   };
 
-  const filteredFromStorage = () =>
-    loadFromStorage().filter((note) =>
-      isBetween(note.date, startDate, endDate)
-    );
+  const filteredFromStorage = () => loadFromStorage().filter(selector);
 
-  const mergeWithStorage = (notes: Note[]) =>
+  const mergeWithStorage = (notes: N[]) =>
     loadFromStorage()
-      .filter((note) => !isBetween(note.date, startDate, endDate))
+      .filter((note) => !selector(note))
       .concat(notes);
 
-  const [notes, setNotes] = useState<Note[]>(filteredFromStorage);
+  const [notes, setNotes] = useState<N[]>(filteredFromStorage);
 
   useEffect(() => {
     setNotes(filteredFromStorage);
-  }, [type]);
+  }, [key, selector]);
 
   useEffect(() => {
-    localStorage.setItem(type, JSON.stringify(mergeWithStorage(notes)));
+    localStorage.setItem(key, JSON.stringify(mergeWithStorage(notes)));
   }, [notes]);
 
-  const addNote = (description: string) => {
+  const addNote = (note: Omit<N, "id">) => {
     setNotes((prev) => [
       {
+        ...note,
         id: new Date().getTime().toString(),
-        description,
-        date: endDate,
-      },
+      } as N,
       ...prev,
     ]);
   };
@@ -51,9 +47,9 @@ export const useNotes = (type: string, startDate: string, endDate: string) => {
     setNotes((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const updateNote = (note: Note) => {
+  const updateNote = (note: N) => {
     setNotes((prev) => prev.map((t) => (t.id === note.id ? note : t)));
   };
 
   return { notes, updateNote, deleteNote, addNote };
-};
+}

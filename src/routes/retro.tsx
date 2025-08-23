@@ -3,12 +3,19 @@ import { Button, Column, Dropdown, Grid, TextInput } from "@carbon/react";
 import { useToday } from "@/hooks/useToday";
 import { useNotes } from "@/hooks/useNotes";
 import NotesList from "@/components/Notes/NotesList";
-import { useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { Add } from "@carbon/icons-react";
+import { isBetween } from "@/helpers/dateHelpers";
 
 export const Route = createFileRoute("/retro")({
   component: Retro,
 });
+
+type RetroNote = {
+  id: string;
+  date: string;
+  description: string;
+};
 
 type NoteType = "kudos" | "highlights" | "lowlights" | "learnings";
 
@@ -33,18 +40,23 @@ const selectItems: { text: string; type: NoteType }[] = [
 
 function Retro() {
   const { today, twoWeeksAgo } = useToday();
+  const noteSelector = useCallback(
+    (note: RetroNote) => isBetween(note.date, twoWeeksAgo, today),
+    [today, twoWeeksAgo]
+  );
+
   const {
     notes: kudos,
     addNote: addKudos,
     deleteNote: deleteKudos,
     updateNote: updateKudos,
-  } = useNotes("kudos", twoWeeksAgo, today);
+  } = useNotes<RetroNote>("kudos", noteSelector);
   const {
     notes: highlights,
     addNote: addHighlight,
     deleteNote: deleteHighlight,
     updateNote: updateHighlight,
-  } = useNotes("highlights", twoWeeksAgo, today);
+  } = useNotes<RetroNote>("highlights", noteSelector);
   const [selectedItem, setSelectedItem] = useState(selectItems[0]);
   const [newNote, setNewNote] = useState("");
 
@@ -54,10 +66,16 @@ function Retro() {
 
     switch (selectedItem.type) {
       case "kudos":
-        addKudos(newNote.trim());
+        addKudos({
+          date: today,
+          description: newNote.trim(),
+        });
         break;
       case "highlights":
-        addHighlight(newNote.trim());
+        addHighlight({
+          date: today,
+          description: newNote.trim(),
+        });
         break;
     }
   };

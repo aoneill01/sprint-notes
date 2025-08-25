@@ -18,10 +18,10 @@ const NotesHeader = () => {
 
   return (
     <Header aria-label="Sprint Notes">
-      <HeaderName href="/" prefix="">
+      <HeaderName onClick={overrideNav("/")} href="/" prefix="">
         Sprint Notes
       </HeaderName>
-      <HeaderNavigation>
+      <HeaderNavigation aria-label="Navigation">
         <HeaderMenuItem
           onClick={overrideNav("/")}
           href="#"
